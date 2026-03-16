@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zoey 的 AI 插画日记本</title>
+
+  <!-- 让页面在手机端也正常显示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 这里加上这行，连接 style.css -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- 如果你还有 Google 字体之类的，也放在 head 里 -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  ...
+</body>
+</html>
+</style>
+</head>
+<body>
+  <!--
+    ====================================
+    背景插画：云朵 / 星星 / 彩色贴纸
+    （只用简单的 div + CSS 实现）
+    ====================================
+  -->
+  <!-- 几朵云：手动设置不同的位置 -->
+  <div class="cloud cloud--large" style="top: 70px; left: 5%; animation-delay: 0s;"></div>
+  <div class="cloud cloud--medium" style="top: 160px; right: 8%; animation-delay: 3s;"></div>
+  <div class="cloud cloud--small" style="top: 280px; left: 25%; animation-delay: 6s;"></div>
+  <div class="cloud cloud--small" style="top: 430px; right: 20%; animation-delay: 9s;"></div>
+
+  <!-- 星星若干：用 inline style 控制位置和动画延迟 -->
+  <div class="star" style="top: 80px; left: 70%; animation-delay: 0s;"></div>
+  <div class="star" style="top: 200px; left: 15%; animation-delay: 1s;"></div>
+  <div class="star" style="top: 320px; left: 55%; animation-delay: 1.6s;"></div>
+  <div class="star" style="top: 420px; left: 85%; animation-delay: 0.8s;"></div>
+  <div class="star" style="top: 540px; left: 35%; animation-delay: 1.3s;"></div>
+
+  <!-- 彩色贴纸小圆点，增加 scrapbook / sticker 感觉 -->
+  <div class="confetti-dot" style="top: 120px; left: 48%; background:#ffcad4; animation-delay:0s;"></div>
+  <div class="confetti-dot" style="top: 260px; left: 8%; background:#bde0fe; animation-delay:2s;"></div>
+  <div class="confetti-dot" style="top: 420px; left: 30%; background:#cdeac0; animation-delay:4s;"></div>
+  <div class="confetti-dot" style="top: 520px; left: 80%; background:#ffd6a5; animation-delay:1s;"></div>
+  <div class="confetti-dot" style="top: 620px; left: 60%; background:#ffb5e8; animation-delay:3s;"></div>
+
+  <!--
+    =========================
+    顶部导航栏 Navigation
+    =========================
+  -->
+  <header class="navbar">
+    <div class="navbar__logo">
+      <span class="navbar__logo-emoji">🧠</span>
+      <span>Zoey · AI 插画日记本</span>
+    </div>
+    <nav class="navbar__links">
+      <!-- 导航链接锚点，对应下面各个 section 的 id -->
+      <a href="#home" class="navbar__link">首页</a>
+      <a href="#about" class="navbar__link">关于我</a>
+      <a href="#log" class="navbar__link">AI 日志</a>
+      <a href="#projects" class="navbar__link">项目</a>
+      <a href="#contact" class="navbar__link">联系</a>
+    </nav>
+  </header>
+
+  <!-- 页面主体容器 -->
+  <main class="page">
+    <!--
+      =========================
+      1. 首页 Hero
+      =========================
+    -->
+    <section id="home" class="hero reveal">
+      <!-- 左侧文字部分 -->
+      <div class="hero__text">
+        <p class="hero__hello">嗨～👋 我是</p>
+        <h1 class="hero__name">Zoey</h1>
+        <p class="hero__tagline">
+          正在学习 AI 的小小创作者，<br />
+          想把自己的大脑变成一座温柔又聪明的宇宙。✨
+        </p>
+
+        <!-- 一些小贴纸标签，表达自己 -->
+        <div class="hero__badges">
+          <span class="hero__badge">🌈 pastel lover</span>
+          <span class="hero__badge">🤖 AI 学习中</span>
+          <span class="hero__badge">📒 互联网日记收藏家</span>
+        </div>
+
+        <!-- 主按钮：跳转到学习日志；次按钮：跳到关于我 -->
+        <div class="hero__buttons">
+          <button class="btn" onclick="scrollToSection('log')">
+            看我的 AI 学习贴纸 📚
+          </button>
+          <button class="btn btn--ghost" onclick="scrollToSection('about')">
+            先了解一下我 ☁️
+          </button>
+        </div>
+      </div>
+
+      <!-- 右侧头像 + 欢迎小动画说明 -->
+      <div class="hero__avatar-card">
+        <div class="hero__avatar-circle">
+          <!-- 用 emoji 代替头像，也很可爱 -->
+          🐻
+        </div>
+        <p class="hero__avatar-note">
+          这是 Zoey 的小熊分身。<br />
+          它会陪我一起探索 AI 的森林。
+        </p>
+      </div>
+    </section>
+
+    <!--
+      =========================
+      2. 关于我 About
+      =========================
+    -->
+    <section id="about" class="section reveal">
+      <div class="section__header">
+        <span class="section__emoji">🍰</span>
+        <h2 class="section__title">关于 Zoey</h2>
+      </div>
+      <p class="section__desc">
+        这是一段在互联网宇宙里慢慢展开的自我介绍。这里记录我是谁、从哪里来、要往哪里去。
+      </p>
+
+      <div class="about__content">
+        <!-- 左侧：故事文本，使用贴纸风卡片 -->
+        <div class="sticker-card">
+          <p>
+            嗨，我是 <strong>Zoey</strong>，一个喜欢可爱插画、写日记、收集电子贴纸的普通人。<br />
+            某一天，我发现了 AI 这扇新世界的大门，从此开始了边画画边学算法的旅程。
+          </p>
+          <p>
+            对我来说，AI 不是冷冰冰的代码，而是一群 <em>会发光的小精灵</em>。<br />
+            我希望有一天，能用这些小精灵做出温柔又有趣的东西，陪伴更多人。
+          </p>
+        </div>
+
+        <!-- 右侧：为什么学 AI 的几个小 bullet -->
+        <div class="sticker-card sticker-card--blue">
+          <ul class="about__list">
+            <li>💡 想把脑海里的点子变成真实的作品</li>
+            <li>📚 喜欢学习、拆解复杂的概念</li>
+            <li>🧸 希望做“有温度”的科技产品</li>
+            <li>🌌 相信 AI 是一片很大的宇宙，可以慢慢探险</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      =========================
+      3. AI 学习日志 AI Learning Log
+      =========================
+    -->
+    <section id="log" class="section reveal">
+      <div class="section__header">
+        <span class="section__emoji">📒</span>
+        <h2 class="section__title">AI 学习日志</h2>
+      </div>
+      <p class="section__desc">
+        这里是我的 AI 学习贴纸墙。每一张卡片，都是“我和模型一起熬夜”的小小证据。
+      </p>
+
+      <div class="log-grid">
+        <!-- 日志 1 -->
+        <article class="sticker-card log-card">
+          <div class="log-card__date">Day 01 · 🌱</div>
+          <div class="log-card__title">认识什么是机器学习</div>
+          <p>
+            理解了“让机器自己从数据里总结规律”这个想法。<br />
+            感觉像在教一只小猫学会分辨不同的玩具。
+          </p>
+          <div class="log-card__tags">
+            <span class="log-card__tag">概念入门</span>
+            <span class="log-card__tag">监督学习</span>
+          </div>
+        </article>
+
+        <!-- 日志 2 -->
+        <article class="sticker-card sticker-card--green log-card">
+          <div class="log-card__date">Day 07 · 🧩</div>
+          <div class="log-card__title">第一次跑通一个小模型</div>
+          <p>
+            用 Python + 一个简单数据集，训练了自己的“是猫还是狗”的分类器。<br />
+            虽然准确率一般，但看到 loss 下降时，心情很好。
+          </p>
+          <div class="log-card__tags">
+            <span class="log-card__tag">Python</span>
+            <span class="log-card__tag">实践</span>
+          </div>
+        </article>
+
+        <!-- 日志 3 -->
+        <article class="sticker-card log-card">
+          <div class="log-card__date">Day 15 · 🎧</div>
+          <div class="log-card__title">开始了解大语言模型</div>
+          <p>
+            读了几篇博客，知道了“Transformer”“Attention”这些关键词。<br />
+            发现原来“注意力”不仅是我上课要集中的东西，也是模型的重要能力。
+          </p>
+          <div class="log-card__tags">
+            <span class="log-card__tag">NLP</span>
+            <span class="log-card__tag">Transformer</span>
+          </div>
+        </article>
+
+        <!-- 日志 4 -->
+        <article class="sticker-card sticker-card--blue log-card">
+          <div class="log-card__date">Day 23 · 🌈</div>
+          <div class="log-card__title">用 AI 生成插画小实验</div>
+          <p>
+            尝试用文本生成图像的模型，让它画出“拿着键盘的小熊设计师”。<br />
+            结果有点怪但很可爱，决定以后多做这种小实验。
+          </p>
+          <div class="log-card__tags">
+            <span class="log-card__tag">生成模型</span>
+            <span class="log-card__tag">创意玩耍</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!--
+      =========================
+      4. 项目展示 Projects
+      =========================
+    -->
+    <section id="projects" class="section reveal">
+      <div class="section__header">
+        <span class="section__emoji">🧩</span>
+        <h2 class="section__title">小小项目展览</h2>
+      </div>
+      <p class="section__desc">
+        这里是我正在做 / 想做的一些可爱 AI 小项目，它们还在慢慢长大中。
+      </p>
+
+      <div class="projects-grid">
+        <!-- 项目 1 -->
+        <article class="sticker-card project-card">
+          <h3 class="project-card__title">🎨 AI 心情贴纸生成器</h3>
+          <p class="project-card__desc">
+            输入今天的心情关键词，比如“困困但努力”，生成一张专属的手绘风贴纸，
+            可以贴在日记本上。
+          </p>
+          <span class="project-card__pill">计划中 · 设计阶段</span>
+        </article>
+
+        <!-- 项目 2 -->
+        <article class="sticker-card sticker-card--green project-card">
+          <h3 class="project-card__title">📚 AI 学习路线可视化</h3>
+          <p class="project-card__desc">
+            把自己的学习路线画成一张“糖果地图”，每学会一个概念就点亮一颗糖。
+          </p>
+          <span class="project-card__pill">进行中 · 信息可视化</span>
+        </article>
+
+        <!-- 项目 3 -->
+        <article class="sticker-card sticker-card--blue project-card">
+          <h3 class="project-card__title">🧸 AI 睡前故事机</h3>
+          <p class="project-card__desc">
+            让模型根据关键词生成温柔的睡前小故事，配上简单插画，陪自己慢慢入睡。
+          </p>
+          <span class="project-card__pill">构思中 · 文本生成</span>
+        </article>
+      </div>
+    </section>
+
+    <!--
+      =========================
+      5. 联系方式 Contact
+      =========================
+    -->
+    <section id="contact" class="section reveal">
+      <div class="section__header">
+        <span class="section__emoji">📮</span>
+        <h2 class="section__title">和 Zoey 打个招呼</h2>
+      </div>
+      <p class="section__desc">
+        如果你也在学习 AI，或者喜欢可爱的互联网手帐，欢迎来和我一起聊天。🍡
+      </p>
+
+      <div class="sticker-card contact-card">
+        <!-- 邮箱（示例，可以换成你自己的） -->
+        <p>
+          ✉️ 邮箱：
+          <a href="mailto:zoey.ai.study@example.com" class="contact-link">
+            zoey.ai.study@example.com
+          </a>
+        </p>
+
+        <!-- 社交链接（示例，可以改成真实链接） -->
+        <p>🌐 社交链接：</p>
+        <div class="social-chips">
+          <span class="social-chip">🐱 GitHub · @zoey-ai</span>
+          <span class="social-chip">💬 Twitter · @zoey_ai_diary</span>
+          <span class="social-chip">📸 Instagram · @soft.ai.scribbles</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!--
+    =========================
+    JavaScript 部分
+    - 简单滚动动画（元素出现）
+    - 按钮点击滚动到指定区块
+    =========================
+  -->
+  <script>
+    /*
+      scrollToSection(id)
+      -------------------
+      功能：
+      - 点击按钮时，平滑滚动到对应的 section。
+    */
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    /*
+      滚动出现动画 Scroll Reveal
+      -------------------------
+      思路：
+      1. 给要做动画的元素加上类名 .reveal（在 HTML 里已经加好了）
+      2. 使用 IntersectionObserver 监听这些元素什么时候进入视口
+      3. 当元素出现在视口中时，给它加上 .visible 类
+      4. CSS 会根据 .visible 来做透明度和位置的动画
+    */
+    document.addEventListener("DOMContentLoaded", function () {
+      const revealElements = document.querySelectorAll(".reveal");
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.2, // 元素露出 20% 就开始动画
+          }
+        );
+
+        revealElements.forEach((el) => observer.observe(el));
+      } else {
+        // 如果浏览器不支持（非常老的浏览器），就直接全部显示
+        revealElements.forEach((el) => el.classList.add("visible"));
+      }
+    });
+  </script>
+</body>
+</html>
