@@ -7,17 +7,11 @@
   <!-- 让页面在手机端也正常显示 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 这里加上这行，连接 style.css -->
+  <!-- 连接外部 CSS：style.css 和 index.html 在同一文件夹即可 -->
   <link rel="stylesheet" href="style.css" />
 
   <!-- 如果你还有 Google 字体之类的，也放在 head 里 -->
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
-</head>
-<body>
-  ...
-</body>
-</html>
-</style>
 </head>
 <body>
   <!--
@@ -62,6 +56,7 @@
       <a href="#about" class="navbar__link">关于我</a>
       <a href="#log" class="navbar__link">AI 日志</a>
       <a href="#projects" class="navbar__link">项目</a>
+      <a href="#guestbook" class="navbar__link">留言</a>
       <a href="#contact" class="navbar__link">联系</a>
     </nav>
   </header>
@@ -274,7 +269,60 @@
 
     <!--
       =========================
-      5. 联系方式 Contact
+      5. 留言板 Guestbook
+      - 不用后台：留言会保存在你的浏览器里（localStorage）
+      - 别人访问你的文件时，看不到你的留言（因为本地存储是“每台电脑/每个浏览器”各自保存）
+      =========================
+    -->
+    <section id="guestbook" class="section reveal">
+      <div class="section__header">
+        <span class="section__emoji">💌</span>
+        <h2 class="section__title">留言板</h2>
+      </div>
+      <p class="section__desc">
+        留一句可爱的脚印吧～(◕‿◕) 这块留言板是“本地版”，会保存在你的浏览器里。
+      </p>
+
+      <!-- 表单：输入昵称 + 留言 -->
+      <div class="sticker-card guestbook">
+        <form id="guestbookForm" class="guestbook__form">
+          <label class="guestbook__label" for="gbName">你的昵称 🐣</label>
+          <input
+            id="gbName"
+            class="guestbook__input"
+            type="text"
+            placeholder="比如：小兔子 / AI 练习生"
+            maxlength="20"
+            autocomplete="nickname"
+          />
+
+          <label class="guestbook__label" for="gbMessage">你的留言 ✨</label>
+          <textarea
+            id="gbMessage"
+            class="guestbook__textarea"
+            placeholder="写点想说的话吧…比如：今天也要加油学习 AI！"
+            maxlength="200"
+            rows="4"
+          ></textarea>
+
+          <!-- 操作按钮 -->
+          <div class="guestbook__actions">
+            <button type="submit" class="btn">送出留言 📮</button>
+            <button type="button" class="btn btn--ghost" id="gbClearBtn">清空全部 🧽</button>
+          </div>
+
+          <!-- 小提示：用于显示校验信息 -->
+          <p class="guestbook__hint" id="gbHint" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <!-- 留言列表：JS 会把留言渲染到这里 -->
+      <div class="guestbook__list" id="guestbookList"></div>
+    </section>
+
+    <!--
+      =========================
+      6. 联系方式 Contact
       =========================
     -->
     <section id="contact" class="section reveal">
@@ -328,6 +376,97 @@
     }
 
     /*
+      留言板 Guestbook（本地版）
+      -------------------------
+      说明：
+      - 我们把留言数组存到 localStorage 里
+      - 每条留言包含：id、name、message、time
+      - 渲染时使用 textContent（而不是 innerHTML），更安全也更适合初学者
+    */
+    const GUESTBOOK_KEY = "zoey_guestbook_messages_v1";
+
+    function loadGuestbookMessages() {
+      try {
+        const raw = localStorage.getItem(GUESTBOOK_KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveGuestbookMessages(messages) {
+      localStorage.setItem(GUESTBOOK_KEY, JSON.stringify(messages));
+    }
+
+    function formatTime(ts) {
+      const d = new Date(ts);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    function setHint(text) {
+      const hintEl = document.getElementById("gbHint");
+      if (hintEl) hintEl.textContent = text || "";
+    }
+
+    function renderGuestbook() {
+      const listEl = document.getElementById("guestbookList");
+      if (!listEl) return;
+
+      const messages = loadGuestbookMessages();
+      listEl.innerHTML = ""; // 这里清空容器（我们只往里 append 真实节点）
+
+      if (messages.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "sticker-card guestbook__empty";
+        empty.textContent = "这里还没有留言～来当第一个留下脚印的人吧！🐾";
+        listEl.appendChild(empty);
+        return;
+      }
+
+      // 最新留言显示在最上面
+      const sorted = [...messages].sort((a, b) => b.time - a.time);
+
+      sorted.forEach((m) => {
+        const card = document.createElement("article");
+        card.className = "sticker-card guestbook__item";
+
+        const top = document.createElement("div");
+        top.className = "guestbook__item-top";
+
+        const who = document.createElement("div");
+        who.className = "guestbook__who";
+        who.textContent = `${m.name} · ${formatTime(m.time)}`;
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "guestbook__delete";
+        delBtn.type = "button";
+        delBtn.textContent = "删除";
+        delBtn.addEventListener("click", () => {
+          const next = loadGuestbookMessages().filter((x) => x.id !== m.id);
+          saveGuestbookMessages(next);
+          renderGuestbook();
+        });
+
+        top.appendChild(who);
+        top.appendChild(delBtn);
+
+        const msg = document.createElement("p");
+        msg.className = "guestbook__message";
+        msg.textContent = m.message;
+
+        card.appendChild(top);
+        card.appendChild(msg);
+        listEl.appendChild(card);
+      });
+    }
+
+    /*
       滚动出现动画 Scroll Reveal
       -------------------------
       思路：
@@ -359,6 +498,54 @@
         // 如果浏览器不支持（非常老的浏览器），就直接全部显示
         revealElements.forEach((el) => el.classList.add("visible"));
       }
+
+      // 留言板：绑定表单事件 + 初次渲染
+      const form = document.getElementById("guestbookForm");
+      const clearBtn = document.getElementById("gbClearBtn");
+      const nameEl = document.getElementById("gbName");
+      const msgEl = document.getElementById("gbMessage");
+
+      if (form && nameEl && msgEl) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          setHint("");
+
+          const name = String(nameEl.value || "").trim() || "匿名小可爱";
+          const message = String(msgEl.value || "").trim();
+
+          if (message.length === 0) {
+            setHint("留言内容不能为空哦～先写一句再发送吧！");
+            msgEl.focus();
+            return;
+          }
+
+          const newMsg = {
+            id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+            name: name.slice(0, 20),
+            message: message.slice(0, 200),
+            time: Date.now(),
+          };
+
+          const messages = loadGuestbookMessages();
+          messages.push(newMsg);
+          saveGuestbookMessages(messages);
+
+          // 清空输入框
+          msgEl.value = "";
+          setHint("已送出～谢谢你留下脚印！🐾");
+          renderGuestbook();
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          saveGuestbookMessages([]);
+          setHint("已清空全部留言～");
+          renderGuestbook();
+        });
+      }
+
+      renderGuestbook();
     });
   </script>
 </body>
